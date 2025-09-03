@@ -18,6 +18,8 @@ jobs:
 
       - name: Build and Push image
         run: |
+          chmod 777 ./gradlew
+          ./gradlew build
           cd banking
           IMAGE_NAME=${{ vars.DOCKER_USERNAME }}/banking:latest
           docker build -t "$IMAGE_NAME" -f Dockerfile .
