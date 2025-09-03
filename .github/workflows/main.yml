@@ -37,7 +37,7 @@ jobs:
             if [ ! -d "$HOME/getting-started-app" ]; then
               git clone https://github.com/RathiKrithika/hungry_town "$HOME/hungry_town"
             fi
-            cd "$HOME/hungry_town/k8s"
+            cd "$HOME/hungry_town/banking/k8s"
             git pull origin main
             # Ensure Minikube is running
             if ! minikube status >/dev/null 2>&1; then
