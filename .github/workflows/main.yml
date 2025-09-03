@@ -18,7 +18,7 @@ jobs:
 
       - name: Build (compose) and Push image
         run: |
-          IMAGE_NAME=${{ vars.DOCKER_USERNAME }}/getting-started-app:latest
+          IMAGE_NAME=${{ vars.DOCKER_USERNAME }}/banking:latest
           docker compose build
           docker build -t "$IMAGE_NAME" -f Dockerfile .
           docker push "$IMAGE_NAME"
@@ -33,9 +33,9 @@ jobs:
             set -euo pipefail
 
             if [ ! -d "$HOME/getting-started-app" ]; then
-              git clone https://github.com/RathiKrithika/getting-started-app "$HOME/getting-started-app"
+              git clone https://github.com/RathiKrithika/hungry_town "$HOME/hungry_town"
             fi
-            cd "$HOME/getting-started-app/k8s"
+            cd "$HOME/hungry_town/k8s"
             git pull origin main
             # Ensure Minikube is running
             if ! minikube status >/dev/null 2>&1; then
@@ -49,9 +49,9 @@ jobs:
               --docker-email='${{ vars.DOCKER_EMAIL }}'
 
             if grep -qE 'image:\s' deployment.yml; then
-              sed -i "s|image:\s*.*|image: ${{ vars.DOCKER_USERNAME }}/getting-started-app:latest|g" deployment.yml
+              sed -i "s|image:\s*.*|image: ${{ vars.DOCKER_USERNAME }}/banking:latest|g" deployment.yml
             else
-              sed -i "/name:\s*getting-started-app/a \ \ \ \ \ \ \ \ image: ${{ vars.DOCKER_USERNAME }}/getting-started-app:latest" deployment.yml
+              sed -i "/name:\s*getting-started-app/a \ \ \ \ \ \ \ \ image: ${{ vars.DOCKER_USERNAME }}/banking:latest" deployment.yml
             fi
 
             if ! grep -q "imagePullSecrets:" deployment.yml; then
