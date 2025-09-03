@@ -1,0 +1,3 @@
+rootProject.name = 'hungry_town'
+include 'food_service'
+include 'banking'
