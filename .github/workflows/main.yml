@@ -18,7 +18,7 @@ jobs:
 
       - name: Build and Push image
         run: |
-          
+          cd /banking
           IMAGE_NAME=${{ vars.DOCKER_USERNAME }}/banking:latest
           docker build -t "$IMAGE_NAME" -f Dockerfile .
           docker push "$IMAGE_NAME"
