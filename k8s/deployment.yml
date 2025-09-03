@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hungry-town
+  labels:
+    app: hungry-town
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hungry-town
+  template:
+    metadata:
+      labels:
+        app: hungry-town
+    spec:
+      containers:
+        - name: hungry-town
+          image: rathinamn/hungry-town:latest
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: docker-secret
