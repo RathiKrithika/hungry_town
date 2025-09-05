@@ -34,7 +34,7 @@ jobs:
           script: |
             set -euo pipefail
 
-            if [ ! -d "$HOME/getting-started-app" ]; then
+            if [ ! -d "$HOME/hungry_town" ]; then
               git clone https://github.com/RathiKrithika/hungry_town "$HOME/hungry_town"
             fi
             cd "$HOME/hungry_town/banking/k8s"
@@ -50,29 +50,7 @@ jobs:
               --docker-password='${{ secrets.DOCKER_PASSWORD }}' \
               --docker-email='${{ vars.DOCKER_EMAIL }}'
 
-            if grep -qE 'image:\s' deployment.yml; then
-              sed -i "s|image:\s*.*|image: ${{ vars.DOCKER_USERNAME }}/banking:latest|g" deployment.yml
-            else
-              sed -i "/name:\s*getting-started-app/a \ \ \ \ \ \ \ \ image: ${{ vars.DOCKER_USERNAME }}/banking:latest" deployment.yml
-            fi
-
-            if ! grep -q "imagePullSecrets:" deployment.yml; then
-              awk '
-                /spec:/ && inTplSpec==0 {print; next}
-                /template:/ {print; next}
-                /spec:/ && prevWasTemplate {print; print "      imagePullSecrets:\n        - name: docker-secret"; inTplSpec=1; prevWasTemplate=0; next}
-                {print}
-                {prevWasTemplate = ($0 ~ /template:/)}
-              ' deployment.yml > deployment.tmp || true
-              if [ -s deployment.tmp ]; then mv deployment.tmp deployment.yml; fi
-            fi
-
-            if ! grep -q "imagePullPolicy:" deployment.yml; then
-              sed -i "/image:\s*${{ vars.DOCKER_USERNAME }}\/getting-started-app:latest/a \ \ \ \ \ \ \ \ imagePullPolicy: Always" deployment.yml
-            else
-              sed -i "s|imagePullPolicy:\s*.*|imagePullPolicy: Always|g" deployment.yml
-            fi
-
+            
             kubectl apply -f deployment.yml
             kubectl apply -f service.yml
             kubectl rollout status deployment/getting-started-app --timeout=120s
