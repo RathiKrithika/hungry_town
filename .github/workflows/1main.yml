@@ -46,10 +46,10 @@ jobs:
           
             kubectl delete secret docker-secret --ignore-not-found
             kubectl create secret docker-registry docker-secret \
-              --docker-username=${{ vars.DOCKER_USERNAME }} \   # Change 3
+              --docker-username=${{ vars.DOCKER_USERNAME }} \   
               --docker-password=${{ secrets.DOCKER_PASSWORD }} \
               --docker-email=${{ vars.DOCKER_EMAIL }}
 
             kubectl apply -f deployment.yml
             kubectl apply -f service.yml
-            kubectl rollout status deployment/banking --timeout=120s   # Change 1
+            kubectl rollout status deployment/banking --timeout=120s   
