@@ -1,4 +1,4 @@
-name: CI/CD to Minikube on EC2
+name: 1CI/CD to Minikube on EC2
 
 on: workflow_dispatch
 
