@@ -21,7 +21,7 @@ jobs:
           ./gradlew build
           cd banking
           IMAGE_NAME=${{ vars.DOCKER_USERNAME }}/banking:latest
-          docker build -t "$IMAGE_NAME" -f Dockerfile .  
+          docker build -t "$IMAGE_NAME" -f Dockerfile .
           docker push "$IMAGE_NAME"
 
       - name: Deploy to Minikube on EC2
@@ -41,18 +41,18 @@ jobs:
 
             # Ensure Minikube is running
             if ! minikube status >/dev/null 2>&1; then
-                minikube start --driver=docker
+              minikube start --driver=docker
             fi
-          
-            - name: Create Docker registry secret
-            run: |
-                 kubectl delete secret docker-secret --ignore-not-found
 
-                 kubectl create secret docker-registry docker-secret \
-                 --docker-username=${{ vars.DOCKER_USERNAME }} \
-                 --docker-password=${{ secrets.DOCKER_PASSWORD }} \
-                 --docker-email=${{ vars.DOCKER_EMAIL }}
+            # Docker registry secret
+            kubectl delete secret docker-secret --ignore-not-found
 
+            kubectl create secret docker-registry docker-secret \
+              --docker-username=${{ vars.DOCKER_USERNAME }} \
+              --docker-password=${{ secrets.DOCKER_PASSWORD }} \
+              --docker-email=${{ vars.DOCKER_EMAIL }}
+
+            # Deploy Kubernetes manifests
             kubectl apply -f deployment.yml
             kubectl apply -f service.yml
-            kubectl rollout status deployment/banking --timeout=120s   
+            kubectl rollout status deployment/banking --timeout=120s
