@@ -2,7 +2,6 @@ name: 1CI/CD to Minikube on EC2
 
 on: workflow_dispatch
 
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -22,8 +21,7 @@ jobs:
           ./gradlew build
           cd banking
           IMAGE_NAME=${{ vars.DOCKER_USERNAME }}/banking:latest
-          docker compose build
-          docker build -t "$IMAGE_NAME" -f Dockerfile .
+          docker build -t "$IMAGE_NAME" -f Dockerfile .   # Change 2
           docker push "$IMAGE_NAME"
 
       - name: Deploy to Minikube on EC2
@@ -40,6 +38,7 @@ jobs:
             fi
             cd "$HOME/hungry_town/banking/k8s"
             git pull origin main
+
             # Ensure Minikube is running
             if ! minikube status >/dev/null 2>&1; then
                 minikube start --driver=docker
@@ -47,11 +46,10 @@ jobs:
           
             kubectl delete secret docker-secret --ignore-not-found
             kubectl create secret docker-registry docker-secret \
-              --docker-username='${{ vars.DOCKER_USERNAME }}' \
-              --docker-password='${{ secrets.DOCKER_PASSWORD }}' \
-              --docker-email='${{ vars.DOCKER_EMAIL }}'
+              --docker-username=${{ vars.DOCKER_USERNAME }} \   # Change 3
+              --docker-password=${{ secrets.DOCKER_PASSWORD }} \
+              --docker-email=${{ vars.DOCKER_EMAIL }}
 
-            
             kubectl apply -f deployment.yml
             kubectl apply -f service.yml
-            kubectl rollout status deployment/getting-started-app --timeout=120s
+            kubectl rollout status deployment/banking --timeout=120s   # Change 1
