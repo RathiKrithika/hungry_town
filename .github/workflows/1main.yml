@@ -15,17 +15,17 @@ jobs:
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ vars.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build and Push image
+      - name: Build and Push image using Docker Compose
         run: |
           chmod 777 ./gradlew
           ./gradlew build
-          cd banking
-          
-          IMAGE_NAME=${{ vars.DOCKER_USERNAME }}/banking:latest
-          # Build and push using docker-compose
+
+          # Set Docker username for docker-compose substitution
+          export DOCKER_USERNAME=${{ vars.DOCKER_USERNAME }}
+
+          # Build and push Docker image
           docker compose -f docker-compose.yml build
           docker compose -f docker-compose.yml push
-
 
       - name: Deploy to Minikube on EC2
         uses: appleboy/ssh-action@v1.2.0
@@ -56,6 +56,11 @@ jobs:
               --docker-email=${{ vars.DOCKER_EMAIL }}
 
             # Deploy Kubernetes manifests
-            kubectl apply -f deployment.yml
-            kubectl apply -f service.yml
+            kubectl apply -f mongo-deployment.yml
+            kubectl apply -f mongo-service.yml
+            kubectl apply -f banking-deployment.yml
+            kubectl apply -f banking-service.yml
+
+            # Wait until banking pod is ready
             kubectl rollout status deployment/banking --timeout=120s
+
