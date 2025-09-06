@@ -19,6 +19,7 @@ jobs:
         run: |
           chmod 777 ./gradlew
           ./gradlew build
+          cd banking
 
           # Set Docker username for docker-compose substitution
           export DOCKER_USERNAME=${{ vars.DOCKER_USERNAME }}
