@@ -20,9 +20,11 @@ jobs:
           chmod 777 ./gradlew
           ./gradlew build
           cd banking
+          
           IMAGE_NAME=${{ vars.DOCKER_USERNAME }}/banking:latest
-          docker build -t "$IMAGE_NAME" -f Dockerfile .
-          docker push "$IMAGE_NAME"
+          # Build and push using docker-compose
+          docker-compose -f docker-compose.yml build
+          docker-compose -f docker-compose.yml push
 
       - name: Deploy to Minikube on EC2
         uses: appleboy/ssh-action@v1.2.0
