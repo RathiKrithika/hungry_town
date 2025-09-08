@@ -22,7 +22,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: SPRING_DATA_MONGODB_URI
-              value: mongodb://mongo-service:27017/sim_service
+              value: mongodb://mongo-service:27017/banking
       restartPolicy: Always
       imagePullSecrets:
         - name: docker-secret
