@@ -1,8 +1,8 @@
-version: '3.8'
 services:
   app:
     build: .
-    container_name: banking:latest
+    image: rathinamn/banking:latest   
+    container_name: banking           
     ports:
       - "8080:8080"
     depends_on:
